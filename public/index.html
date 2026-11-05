@@ -4,24 +4,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>할 일 목록</title>
+  <script>
+    // 화면이 그려지기 전에 테마를 먼저 적용해서, 다크 모드일 때 하얗게 번쩍이지 않게 해요
+    (function () {
+      const saved = localStorage.getItem("my-todo-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+    })();
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="card">
-    <h1>📝 할 일 목록</h1>
+    <header class="top">
+      <h1>📝 할 일 목록</h1>
+      <button id="theme-toggle" type="button" title="테마 바꾸기" aria-label="다크 모드 전환">🌙</button>
+    </header>
 
     <form id="todo-form">
-      <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" required />
-      <button type="submit">추가</button>
+      <div class="row">
+        <input id="todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" required />
+        <button type="submit" class="primary">추가</button>
+      </div>
+      <div class="row options">
+        <label>
+          📅
+          <input id="todo-due" type="date" aria-label="마감 날짜" />
+        </label>
+        <label>
+          🏷️
+          <select id="todo-category" aria-label="카테고리">
+            <option value="">카테고리 없음</option>
+            <option value="work">회사</option>
+            <option value="personal">개인</option>
+            <option value="study">공부</option>
+          </select>
+        </label>
+      </div>
     </form>
 
-    <div class="filters">
+    <div class="filters" id="status-filters">
       <button data-filter="all" class="active">전체</button>
       <button data-filter="active">진행 중</button>
       <button data-filter="done">완료</button>
     </div>
 
+    <div class="filters" id="category-filters">
+      <button data-category="all" class="active">모든 태그</button>
+      <button data-category="work" class="tag-work">회사</button>
+      <button data-category="personal" class="tag-personal">개인</button>
+      <button data-category="study" class="tag-study">공부</button>
+    </div>
+
     <ul id="todo-list"></ul>
+
+    <p class="hint">더블클릭으로 수정 · ⠿를 잡고 끌어서 순서 변경 · ☆를 누르면 중요 표시</p>
 
     <footer>
       <span id="todo-count"></span>
